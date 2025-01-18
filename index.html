@@ -35,21 +35,39 @@
       // Create material for lines (axes)
       const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
 
-      // Data points: sales, revenue, and region
+      // Sample Data: Region, Sales, and Revenue
       const dataPoints = [
-        { x: 1, y: 2, z: 3, color: 0xff0000 }, // Region 1
-        { x: 2, y: 1, z: 4, color: 0x00ff00 }, // Region 2
-        { x: 3, y: 3, z: 2, color: 0x0000ff }, // Region 3
-        { x: 4, y: 4, z: 1, color: 0xffff00 }, // Region 4
+        { region: "India", x: 10, y: 500, z: 1, color: 0xff0000 }, // Sales in M$, Revenue in M$
+        { region: "US", x: 200, y: 800, z: 2, color: 0x00ff00 },
+        { region: "UK", x: 50, y: 300, z: 3, color: 0x0000ff },
+        { region: "Germany", x: 100, y: 600, z: 4, color: 0xffff00 },
       ];
 
+      // Normalize the data for visualization
+      const scaleFactor = 0.02; // Scale data to fit the AR scene
+      const normalizedData = dataPoints.map((point) => ({
+        ...point,
+        x: point.x * scaleFactor,
+        y: point.y * scaleFactor,
+        z: point.z, // Region is already normalized
+      }));
+
       // Add each data point as a sphere
-      dataPoints.forEach((point) => {
+      normalizedData.forEach((point) => {
         const sphereGeometry = new THREE.SphereGeometry(0.1, 16, 16); // Small sphere for the data point
         const sphereMaterial = new THREE.MeshBasicMaterial({ color: point.color });
         const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
         sphere.position.set(point.x, point.y, point.z); // Position based on x, y, z
         scene.add(sphere);
+
+        // Add labels for each data point
+        const label = document.createElement("a-text");
+        label.setAttribute("value", `${point.region}\nSales: ${point.x / scaleFactor}M$\nRevenue: ${point.y / scaleFactor}M$`);
+        label.setAttribute("color", "white");
+        label.setAttribute("side", "double");
+        label.setAttribute("align", "center");
+        label.setAttribute("position", `${point.x} ${point.y + 0.2} ${point.z}`);
+        document.querySelector("a-marker").appendChild(label);
       });
 
       // Create X, Y, Z axes
@@ -74,8 +92,8 @@
 
       // Add axis labels using A-Frame text
       const labels = [
-        { text: "Sales", position: [5.2, 0, 0] },
-        { text: "Revenue", position: [0, 5.2, 0] },
+        { text: "Sales (M$)", position: [5.2, 0, 0] },
+        { text: "Revenue (M$)", position: [0, 5.2, 0] },
         { text: "Region", position: [0, 0, 5.2] },
       ];
 
