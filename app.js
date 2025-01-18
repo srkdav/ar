@@ -1,7 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   const graphDiv = document.getElementById('graph');
+  if (!graphDiv) {
+    console.error('Error: Graph container not found!');
+    return;
+  }
 
-  // Define Plotly Data and Layout
+  // Plotly Data
   const data = [
     {
       x: [1, 2, 3],
@@ -12,16 +16,15 @@ document.addEventListener("DOMContentLoaded", () => {
       marker: { size: 8, color: [10, 20, 30], colorscale: 'Viridis' },
     },
   ];
-
   const layout = { title: '3D Scatter Plot' };
 
-  // Render Plotly Graph
-  Plotly.newPlot(graphDiv, data, layout).then(() => {
-    const canvas = graphDiv.querySelector('canvas');
-    const texture = new THREE.CanvasTexture(canvas);
+  Plotly.newPlot(graphDiv, data, layout)
+    .then(() => {
+      const canvas = graphDiv.querySelector('canvas');
+      const texture = new THREE.CanvasTexture(canvas);
 
-    // Apply Texture to AR.js Plane
-    const plotlyPlane = document.querySelector('#plotly-plane');
-    plotlyPlane.setAttribute('material', { src: texture });
-  });
+      const plane = document.querySelector('#plotly-plane');
+      plane.setAttribute('material', { src: texture });
+    })
+    .catch(err => console.error('Error rendering Plotly graph:', err));
 });
