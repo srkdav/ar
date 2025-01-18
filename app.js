@@ -1,59 +1,31 @@
 document.addEventListener("DOMContentLoaded", () => {
-  console.log('DOM Content Loaded: Initializing Plotly and AR.js');
-
-  // Step 1: Select the container for the Plotly graph
-  const graphDiv = document.getElementById('graph');
-  if (!graphDiv) {
-    console.error('Error: Graph container not found!');
-    return;
-  }
-
-  // Step 2: Plotly Data and Layout
+  // Data for 3D Scatter Plot
   const data = [
-    {
-      x: [1, 2, 3],
-      y: [4, 5, 6],
-      z: [7, 8, 9],
-      type: 'scatter3d',
-      mode: 'markers',
-      marker: {
-        size: 8,
-        color: [10, 20, 30], // Color based on Z-axis
-        colorscale: 'Viridis',
-      },
-    },
+    { x: 0, y: 1, z: 0, color: "red" },   // Point 1
+    { x: 1, y: 2, z: -1, color: "green" }, // Point 2
+    { x: -1, y: 3, z: -2, color: "blue" }, // Point 3
+    { x: 2, y: 0.5, z: -0.5, color: "yellow" }, // Point 4
   ];
 
-  const layout = {
-    title: '3D Scatter Plot',
-    scene: {
-      xaxis: { title: 'X Axis' },
-      yaxis: { title: 'Y Axis' },
-      zaxis: { title: 'Z Axis' },
-    },
-  };
+  // Get the marker element
+  const marker = document.querySelector('a-marker');
 
-  // Step 3: Render Plotly Graph
-  Plotly.newPlot(graphDiv, data, layout)
-    .then(() => {
-      console.log('Plotly graph rendered successfully.');
+  // Render each data point as a 3D sphere
+  data.forEach((point) => {
+    const sphere = document.createElement('a-sphere');
+    sphere.setAttribute('position', `${point.x} ${point.y} ${point.z}`);
+    sphere.setAttribute('radius', 0.1); // Adjust size of spheres
+    sphere.setAttribute('color', point.color);
+    marker.appendChild(sphere);
+  });
 
-      // Step 4: Capture Plotly Graph as Texture
-      const plotCanvas = graphDiv.querySelector('canvas');
-      if (!plotCanvas) {
-        console.error('Error: Plotly canvas not found!');
-        return;
-      }
-      const texture = new THREE.CanvasTexture(plotCanvas);
-
-      // Step 5: Apply Texture to AR.js Plane
-      const arPlane = document.querySelector('#plotly-plane');
-      if (arPlane) {
-        arPlane.setAttribute('material', { src: texture });
-        console.log('Plotly graph successfully applied to AR plane.');
-      } else {
-        console.error('Error: AR.js plane not found!');
-      }
-    })
-    .catch((err) => console.error('Error rendering Plotly graph:', err));
+  // Render lines connecting the points
+  for (let i = 0; i < data.length - 1; i++) {
+    const line = document.createElement('a-entity');
+    line.setAttribute(
+      'line',
+      `start: ${data[i].x} ${data[i].y} ${data[i].z}; end: ${data[i + 1].x} ${data[i + 1].y} ${data[i + 1].z}; color: white`
+    );
+    marker.appendChild(line);
+  }
 });
