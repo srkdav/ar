@@ -3,28 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plotly AR.js</title>
-  <!-- Include A-Frame -->
+  <title>Plotly with AR.js</title>
+  <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <!-- Include AR.js -->
+  <!-- AR.js -->
   <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
-  <!-- Include Plotly -->
+  <!-- Plotly -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <style>
-    body { margin: 0; overflow: hidden; }
-  </style>
 </head>
 <body>
   <!-- AR.js Scene -->
   <a-scene embedded arjs>
-    <!-- Marker for AR -->
     <a-marker preset="custom" type="pattern" url="marker.patt">
-      <!-- Plotly Graph Plane -->
-      <a-entity id="plotly-plane" geometry="primitive: plane; height: 3; width: 3;" position="0 1 0"></a-entity>
+      <a-entity id="plotly-plane" geometry="primitive: plane; height: 2; width: 2;" position="0 1 0"></a-entity>
     </a-marker>
     <a-entity camera></a-entity>
   </a-scene>
-  <!-- Hidden Div for Plotly Graph -->
   <div id="graph" style="display: none;"></div>
   <script src="app.js"></script>
 </body>
