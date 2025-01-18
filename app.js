@@ -1,50 +1,51 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Ensure Plotly is loaded
-  if (typeof Plotly === "undefined") {
-    console.error("Plotly is not loaded. Check your script imports.");
-    return;
-  }
+  // Get the 3D graph container
+  const graphContainer = document.querySelector("#graph-container").object3D;
 
-  const graphDiv = document.createElement("div");
-  graphDiv.style.width = "500px";
-  graphDiv.style.height = "500px";
-  graphDiv.style.position = "absolute";
-  graphDiv.style.top = "-9999px"; // Hide off-screen
-  document.body.appendChild(graphDiv);
+  // Three.js Scene for the 3D Graph
+  const scene = new THREE.Scene();
 
-  // Plotly 3D Graph Data
+  // Create a material for the axes and grid
+  const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+
+  // Data for the 3D scatter plot
   const data = [
-    {
-      x: [1, 2, 3],
-      y: [4, 5, 6],
-      z: [7, 8, 9],
-      type: "scatter3d",
-      mode: "markers",
-      marker: { size: 8, color: [10, 20, 30], colorscale: "Viridis" },
-    },
+    { x: 1, y: 2, z: 3, color: 0xff0000 }, // Point 1
+    { x: -2, y: 1, z: -1, color: 0x00ff00 }, // Point 2
+    { x: 2, y: -1, z: 2, color: 0x0000ff }, // Point 3
+    { x: -1, y: -2, z: 0, color: 0xffff00 }, // Point 4
   ];
 
-  const layout = {
-    title: "3D Scatter Plot",
-    scene: {
-      xaxis: { title: "X Axis" },
-      yaxis: { title: "Y Axis" },
-      zaxis: { title: "Z Axis" },
-    },
-  };
-
-  // Render Plotly Graph
-  Plotly.newPlot(graphDiv, data, layout).then(() => {
-    const canvas = graphDiv.querySelector("canvas");
-    if (!canvas) {
-      console.error("Plotly canvas not found.");
-      return;
-    }
-
-    const texture = new THREE.CanvasTexture(canvas);
-
-    // Apply texture to AR.js plane
-    const graphPlane = document.querySelector("#graph-plane");
-    graphPlane.setAttribute("material", { src: texture });
+  // Add each point as a sphere
+  data.forEach((point) => {
+    const sphereGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+    const sphereMaterial = new THREE.MeshBasicMaterial({ color: point.color });
+    const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphere.position.set(point.x, point.y, point.z);
+    scene.add(sphere);
   });
+
+  // Create X, Y, Z axes
+  const axesPoints = [
+    // X-axis
+    new THREE.Vector3(-3, 0, 0),
+    new THREE.Vector3(3, 0, 0),
+    // Y-axis
+    new THREE.Vector3(0, -3, 0),
+    new THREE.Vector3(0, 3, 0),
+    // Z-axis
+    new THREE.Vector3(0, 0, -3),
+    new THREE.Vector3(0, 0, 3),
+  ];
+
+  const axesGeometry = new THREE.BufferGeometry().setFromPoints(axesPoints);
+  const axes = new THREE.LineSegments(axesGeometry, lineMaterial);
+  scene.add(axes);
+
+  // Add a grid for reference
+  const gridHelper = new THREE.GridHelper(6, 12);
+  scene.add(gridHelper);
+
+  // Attach the Three.js scene to the A-Frame graph container
+  graphContainer.add(scene);
 });
