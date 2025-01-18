@@ -44,7 +44,7 @@
       ];
 
       // Smaller scale factor for normalization
-      const scaleFactor = 0.005; // Reduced scaling for a smaller graph
+      const scaleFactor = 0.0025; // Reduced scaling for a much smaller graph
       const normalizedData = dataPoints.map((point) => ({
         ...point,
         x: point.x * scaleFactor,
@@ -54,7 +54,7 @@
 
       // Add each data point as a sphere
       normalizedData.forEach((point) => {
-        const sphereGeometry = new THREE.SphereGeometry(0.05, 16, 16); // Smaller sphere
+        const sphereGeometry = new THREE.SphereGeometry(0.03, 16, 16); // Smaller sphere
         const sphereMaterial = new THREE.MeshBasicMaterial({ color: point.color });
         const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
         sphere.position.set(point.x, point.y, point.z); // Position based on x, y, z
@@ -66,8 +66,8 @@
         label.setAttribute("color", "white");
         label.setAttribute("side", "double");
         label.setAttribute("align", "center");
-        label.setAttribute("scale", "0.3 0.3 0.3"); // Scale down labels
-        label.setAttribute("position", `${point.x} ${point.y + 0.1} ${point.z}`);
+        label.setAttribute("scale", "0.2 0.2 0.2"); // Smaller labels
+        label.setAttribute("position", `${point.x} ${point.y + 0.05} ${point.z}`);
         document.querySelector("a-marker").appendChild(label);
       });
 
@@ -75,13 +75,13 @@
       const axesPoints = [
         // X-axis (Sales)
         new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(1, 0, 0), // Shortened length
+        new THREE.Vector3(0.5, 0, 0), // Shortened length
         // Y-axis (Revenue)
         new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0, 1, 0), // Shortened length
+        new THREE.Vector3(0, 0.5, 0), // Shortened length
         // Z-axis (Region)
         new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0, 0, 1), // Shortened length
+        new THREE.Vector3(0, 0, 0.5), // Shortened length
       ];
 
       const axesGeometry = new THREE.BufferGeometry().setFromPoints(axesPoints);
@@ -93,9 +93,9 @@
 
       // Add axis labels using A-Frame text
       const labels = [
-        { text: "Sales (M$)", position: [1.2, 0, 0] },
-        { text: "Revenue (M$)", position: [0, 1.2, 0] },
-        { text: "Region", position: [0, 0, 1.2] },
+        { text: "Sales (M$)", position: [0.6, 0, 0] },
+        { text: "Revenue (M$)", position: [0, 0.6, 0] },
+        { text: "Region", position: [0, 0, 0.6] },
       ];
 
       labels.forEach((label) => {
@@ -103,7 +103,7 @@
         text.setAttribute("value", label.text);
         text.setAttribute("color", "white");
         text.setAttribute("side", "double");
-        text.setAttribute("scale", "0.3 0.3 0.3"); // Scale down labels
+        text.setAttribute("scale", "0.2 0.2 0.2"); // Smaller axis labels
         text.setAttribute("position", label.position.join(" "));
         document.querySelector("a-marker").appendChild(text);
       });
