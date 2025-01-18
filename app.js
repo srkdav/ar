@@ -10,10 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Data for the 3D scatter plot
   const data = [
-    { x: 1, y: 2, z: 3, color: 0xff0000 }, // Point 1
-    { x: -2, y: 1, z: -1, color: 0x00ff00 }, // Point 2
-    { x: 2, y: -1, z: 2, color: 0x0000ff }, // Point 3
-    { x: -1, y: -2, z: 0, color: 0xffff00 }, // Point 4
+    { x: 1, y: 2, z: 3, color: 0xff0000 }, // Red point
+    { x: -2, y: 1, z: -1, color: 0x00ff00 }, // Green point
+    { x: 2, y: -1, z: 2, color: 0x0000ff }, // Blue point
+    { x: -1, y: -2, z: 0, color: 0xffff00 }, // Yellow point
   ];
 
   // Add each point as a sphere
