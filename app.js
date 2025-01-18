@@ -10,10 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Data points: sales, revenue, and region
   const dataPoints = [
-    { x: 1, y: 5, z: 2, color: 0xff0000 }, // Region 1
-    { x: 2, y: 3, z: 4, color: 0x00ff00 }, // Region 2
-    { x: 3, y: 6, z: 1, color: 0x0000ff }, // Region 3
-    { x: 4, y: 4, z: 3, color: 0xffff00 }, // Region 4
+    { x: 1, y: 2, z: 3, color: 0xff0000 }, // Region 1
+    { x: 2, y: 1, z: 4, color: 0x00ff00 }, // Region 2
+    { x: 3, y: 3, z: 2, color: 0x0000ff }, // Region 3
+    { x: 4, y: 4, z: 1, color: 0xffff00 }, // Region 4
   ];
 
   // Add each data point as a sphere
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     new THREE.Vector3(5, 0, 0),
     // Y-axis (Revenue)
     new THREE.Vector3(0, 0, 0),
-    new THREE.Vector3(0, 6, 0),
+    new THREE.Vector3(0, 5, 0),
     // Z-axis (Region)
     new THREE.Vector3(0, 0, 0),
     new THREE.Vector3(0, 0, 5),
@@ -42,10 +42,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const axes = new THREE.LineSegments(axesGeometry, lineMaterial);
   scene.add(axes);
 
-  // Add axis labels (X, Y, Z)
+  // Attach the Three.js scene to the A-Frame chart container
+  chartContainer.add(scene);
+
+  // Add axis labels using A-Frame text
   const labels = [
     { text: "Sales", position: [5.2, 0, 0] },
-    { text: "Revenue", position: [0, 6.2, 0] },
+    { text: "Revenue", position: [0, 5.2, 0] },
     { text: "Region", position: [0, 0, 5.2] },
   ];
 
@@ -57,7 +60,4 @@ document.addEventListener("DOMContentLoaded", () => {
     text.setAttribute("position", label.position.join(" "));
     document.querySelector("a-marker").appendChild(text);
   });
-
-  // Attach the Three.js scene to the A-Frame chart container
-  chartContainer.add(scene);
 });
