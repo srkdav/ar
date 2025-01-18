@@ -3,29 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plotly AR.js</title>
-  <!-- Include A-Frame -->
+  <title>3D Scatter Plot in AR.js</title>
+  <!-- A-Frame Library -->
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <!-- Include AR.js -->
+  <!-- AR.js Library -->
   <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
-  <!-- Include Plotly -->
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
-    body { margin: 0; overflow: hidden; }
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
   </style>
 </head>
 <body>
   <!-- AR.js Scene -->
   <a-scene embedded arjs>
-    <!-- Marker for AR -->
+    <!-- Marker for the AR Scene -->
     <a-marker preset="custom" type="pattern" url="marker.patt">
-      <!-- Plotly Graph Plane -->
-      <a-entity id="plotly-plane" geometry="primitive: plane; height: 3; width: 3;" position="0 1 0"></a-entity>
+      <!-- 3D Scatter Plot Points and Lines will be added dynamically here -->
     </a-marker>
     <a-entity camera></a-entity>
   </a-scene>
-  <!-- Hidden Div for Plotly Graph -->
-  <div id="graph" style="display: none;"></div>
+  <!-- Link to External JS -->
   <script src="app.js"></script>
 </body>
 </html>
