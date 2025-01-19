@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Bar Chart in AR.js</title>
+  <title>Refined 3D Bar Chart</title>
   <!-- Latest A-Frame -->
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   <!-- AR.js -->
@@ -13,8 +13,8 @@
   <a-scene embedded arjs>
     <!-- Marker -->
     <a-marker preset="custom" type="pattern" url="marker.patt">
-      <!-- Rotate the chart slightly for better 3D perspective -->
-      <a-entity id="chart-container" position="0 0 0" rotation="0 30 0"></a-entity>
+      <!-- Rotate the chart for better 3D depth -->
+      <a-entity id="chart-container" position="0 0 0" rotation="0 45 0"></a-entity>
     </a-marker>
     <a-entity camera></a-entity>
   </a-scene>
@@ -25,7 +25,7 @@
 
       // Sample data
       const dataPoints = [
-        { region: "India", x: 0.1, y: 0.5, z: 0.2, color: "red" },   // Sales, Revenue, Region
+        { region: "India", x: 0.1, y: 0.5, z: 0.2, color: "red" },
         { region: "US", x: 0.3, y: 0.8, z: 0.4, color: "green" },
         { region: "UK", x: 0.2, y: 0.3, z: 0.6, color: "blue" },
         { region: "Germany", x: 0.4, y: 0.6, z: 0.8, color: "yellow" },
@@ -34,27 +34,27 @@
       // Add bars for each data point
       dataPoints.forEach(point => {
         const bar = document.createElement("a-box");
-        bar.setAttribute("position", `${point.x} ${point.y / 2} ${point.z}`); // Position at center of bar
-        bar.setAttribute("height", point.y); // Height = Revenue
-        bar.setAttribute("width", "0.05"); // Narrow bar
-        bar.setAttribute("depth", "0.05"); // Narrow bar
-        bar.setAttribute("color", point.color); // Color based on data point
+        bar.setAttribute("position", `${point.x} ${point.y / 2} ${point.z}`);
+        bar.setAttribute("height", point.y);
+        bar.setAttribute("width", "0.08"); // Wider bars
+        bar.setAttribute("depth", "0.08");
+        bar.setAttribute("color", point.color);
         chartContainer.appendChild(bar);
 
-        // Add labels
+        // Add labels above each bar
         const label = document.createElement("a-text");
         label.setAttribute("value", `${point.region}\nSales: ${point.x * 100}M$\nRevenue: ${point.y * 1000}M$`);
         label.setAttribute("color", "white");
         label.setAttribute("side", "double");
         label.setAttribute("align", "center");
-        label.setAttribute("scale", "0.2 0.2 0.2");
-        label.setAttribute("position", `${point.x} ${point.y + 0.1} ${point.z}`);
+        label.setAttribute("scale", "0.25 0.25 0.25"); // Larger labels
+        label.setAttribute("position", `${point.x} ${point.y + 0.1} ${point.z + 0.05}`); // Slightly forward
         chartContainer.appendChild(label);
       });
 
       // Add axes
       const axes = [
-        { start: "0 0 0", end: "0.5 0 0", color: "white", label: "Sales" },
+        { start: "0 0 0", end: "0.6 0 0", color: "white", label: "Sales" },
         { start: "0 0 0", end: "0 1 0", color: "white", label: "Revenue" },
         { start: "0 0 0", end: "0 0 1", color: "white", label: "Region" },
       ];
@@ -69,7 +69,7 @@
         label.setAttribute("value", axis.label);
         label.setAttribute("color", "white");
         label.setAttribute("side", "double");
-        label.setAttribute("scale", "0.2 0.2 0.2");
+        label.setAttribute("scale", "0.25 0.25 0.25"); // Larger axis labels
         label.setAttribute("position", position);
         chartContainer.appendChild(label);
       });
