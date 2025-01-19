@@ -17,8 +17,8 @@
   <a-scene embedded arjs>
     <!-- Marker -->
     <a-marker preset="custom" type="pattern" url="marker.patt">
-      <!-- Container for the 3D chart -->
-      <a-entity id="chart-container" position="0 0 0"></a-entity>
+      <!-- Rotate the graph slightly for better depth -->
+      <a-entity id="chart-container" position="0 0 0" rotation="0 15 0"></a-entity>
     </a-marker>
     <a-entity camera></a-entity>
   </a-scene>
@@ -43,45 +43,46 @@
         { region: "Germany", x: 100, y: 600, z: 4, color: 0xffff00 },
       ];
 
-      // Current scale factor for spheres
-      const scaleFactor = 0.0015;
+      // Adjusted scale factor for a larger Z-axis
+      const scaleFactor = 0.0015; 
+      const depthScale = 0.005; // Larger Z-axis scaling for depth effect
       const normalizedData = dataPoints.map((point) => ({
         ...point,
         x: point.x * scaleFactor,
         y: point.y * scaleFactor,
-        z: point.z * scaleFactor,
+        z: point.z * depthScale, // Scale Z-axis separately
       }));
 
       // Add each data point as a sphere
       normalizedData.forEach((point) => {
-        const sphereGeometry = new THREE.SphereGeometry(0.02, 16, 16); // Keep sphere size the same
+        const sphereGeometry = new THREE.SphereGeometry(0.02, 16, 16); // Small spheres
         const sphereMaterial = new THREE.MeshBasicMaterial({ color: point.color });
         const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
         sphere.position.set(point.x, point.y, point.z); // Position based on x, y, z
         scene.add(sphere);
 
-        // Add labels for each data point
+        // Add smaller labels for each data point
         const label = document.createElement("a-text");
         label.setAttribute("value", `${point.region}\nSales: ${point.x / scaleFactor}M$\nRevenue: ${point.y / scaleFactor}M$`);
         label.setAttribute("color", "white");
         label.setAttribute("side", "double");
         label.setAttribute("align", "center");
-        label.setAttribute("scale", "0.25 0.25 0.25"); // Adjust label size for larger graph
+        label.setAttribute("scale", "0.2 0.2 0.2"); // Smaller labels
         label.setAttribute("position", `${point.x} ${point.y + 0.03} ${point.z}`);
         document.querySelector("a-marker").appendChild(label);
       });
 
-      // Create larger X, Y, Z axes
+      // Create X, Y, Z axes with larger Z-axis
       const axesPoints = [
         // X-axis (Sales)
         new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0.5, 0, 0), // Increased length
+        new THREE.Vector3(0.5, 0, 0),
         // Y-axis (Revenue)
         new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0, 0.5, 0), // Increased length
+        new THREE.Vector3(0, 0.5, 0),
         // Z-axis (Region)
         new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0, 0, 0.5), // Increased length
+        new THREE.Vector3(0, 0, 0.7), // Extended length for depth
       ];
 
       const axesGeometry = new THREE.BufferGeometry().setFromPoints(axesPoints);
@@ -91,11 +92,11 @@
       // Attach the Three.js scene to the A-Frame chart container
       chartContainer.add(scene);
 
-      // Add axis labels using A-Frame text
+      // Add axis labels with adjusted Z-axis label placement
       const labels = [
         { text: "Sales (M$)", position: [0.55, 0, 0] },
         { text: "Revenue (M$)", position: [0, 0.55, 0] },
-        { text: "Region", position: [0, 0, 0.55] },
+        { text: "Region", position: [0, 0, 0.75] },
       ];
 
       labels.forEach((label) => {
@@ -103,7 +104,7 @@
         text.setAttribute("value", label.text);
         text.setAttribute("color", "white");
         text.setAttribute("side", "double");
-        text.setAttribute("scale", "0.25 0.25 0.25"); // Larger labels to match graph size
+        text.setAttribute("scale", "0.2 0.2 0.2"); // Smaller axis labels
         text.setAttribute("position", label.position.join(" "));
         document.querySelector("a-marker").appendChild(text);
       });
