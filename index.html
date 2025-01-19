@@ -3,110 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Chart in AR.js</title>
+  <title>3D Bar Chart in AR.js</title>
   <!-- Latest A-Frame -->
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   <!-- AR.js -->
   <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
-  <script>
-    // Disable unused GLTF loader to prevent DRACO conflicts
-    AFRAME.registerComponent('gltf-model', { init: () => {} });
-  </script>
 </head>
 <body>
   <a-scene embedded arjs>
     <!-- Marker -->
     <a-marker preset="custom" type="pattern" url="marker.patt">
-      <!-- Rotate the graph slightly for better depth -->
-      <a-entity id="chart-container" position="0 0 0" rotation="0 15 0"></a-entity>
+      <!-- Rotate the chart slightly for better 3D perspective -->
+      <a-entity id="chart-container" position="0 0 0" rotation="0 30 0"></a-entity>
     </a-marker>
     <a-entity camera></a-entity>
   </a-scene>
 
-  <!-- Inline JavaScript -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // Get the 3D chart container
-      const chartContainer = document.querySelector("#chart-container").object3D;
+      const chartContainer = document.querySelector("#chart-container");
 
-      // Create a Three.js Scene for the 3D chart
-      const scene = new THREE.Scene();
-
-      // Create material for lines (axes)
-      const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
-
-      // Sample Data: Region, Sales, and Revenue
+      // Sample data
       const dataPoints = [
-        { region: "India", x: 10, y: 500, z: 1, color: 0xff0000 }, // Sales in M$, Revenue in M$
-        { region: "US", x: 200, y: 800, z: 2, color: 0x00ff00 },
-        { region: "UK", x: 50, y: 300, z: 3, color: 0x0000ff },
-        { region: "Germany", x: 100, y: 600, z: 4, color: 0xffff00 },
+        { region: "India", x: 0.1, y: 0.5, z: 0.2, color: "red" },   // Sales, Revenue, Region
+        { region: "US", x: 0.3, y: 0.8, z: 0.4, color: "green" },
+        { region: "UK", x: 0.2, y: 0.3, z: 0.6, color: "blue" },
+        { region: "Germany", x: 0.4, y: 0.6, z: 0.8, color: "yellow" },
       ];
 
-      // Adjusted scale factor for a larger Z-axis
-      const scaleFactor = 0.0015; 
-      const depthScale = 0.005; // Larger Z-axis scaling for depth effect
-      const normalizedData = dataPoints.map((point) => ({
-        ...point,
-        x: point.x * scaleFactor,
-        y: point.y * scaleFactor,
-        z: point.z * depthScale, // Scale Z-axis separately
-      }));
+      // Add bars for each data point
+      dataPoints.forEach(point => {
+        const bar = document.createElement("a-box");
+        bar.setAttribute("position", `${point.x} ${point.y / 2} ${point.z}`); // Position at center of bar
+        bar.setAttribute("height", point.y); // Height = Revenue
+        bar.setAttribute("width", "0.05"); // Narrow bar
+        bar.setAttribute("depth", "0.05"); // Narrow bar
+        bar.setAttribute("color", point.color); // Color based on data point
+        chartContainer.appendChild(bar);
 
-      // Add each data point as a sphere
-      normalizedData.forEach((point) => {
-        const sphereGeometry = new THREE.SphereGeometry(0.02, 16, 16); // Small spheres
-        const sphereMaterial = new THREE.MeshBasicMaterial({ color: point.color });
-        const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        sphere.position.set(point.x, point.y, point.z); // Position based on x, y, z
-        scene.add(sphere);
-
-        // Add smaller labels for each data point
+        // Add labels
         const label = document.createElement("a-text");
-        label.setAttribute("value", `${point.region}\nSales: ${point.x / scaleFactor}M$\nRevenue: ${point.y / scaleFactor}M$`);
+        label.setAttribute("value", `${point.region}\nSales: ${point.x * 100}M$\nRevenue: ${point.y * 1000}M$`);
         label.setAttribute("color", "white");
         label.setAttribute("side", "double");
         label.setAttribute("align", "center");
-        label.setAttribute("scale", "0.2 0.2 0.2"); // Smaller labels
-        label.setAttribute("position", `${point.x} ${point.y + 0.03} ${point.z}`);
-        document.querySelector("a-marker").appendChild(label);
+        label.setAttribute("scale", "0.2 0.2 0.2");
+        label.setAttribute("position", `${point.x} ${point.y + 0.1} ${point.z}`);
+        chartContainer.appendChild(label);
       });
 
-      // Create X, Y, Z axes with larger Z-axis
-      const axesPoints = [
-        // X-axis (Sales)
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0.5, 0, 0),
-        // Y-axis (Revenue)
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0, 0.5, 0),
-        // Z-axis (Region)
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0, 0, 0.7), // Extended length for depth
+      // Add axes
+      const axes = [
+        { start: "0 0 0", end: "0.5 0 0", color: "white", label: "Sales" },
+        { start: "0 0 0", end: "0 1 0", color: "white", label: "Revenue" },
+        { start: "0 0 0", end: "0 0 1", color: "white", label: "Region" },
       ];
 
-      const axesGeometry = new THREE.BufferGeometry().setFromPoints(axesPoints);
-      const axes = new THREE.LineSegments(axesGeometry, lineMaterial);
-      scene.add(axes);
+      axes.forEach(axis => {
+        const line = document.createElement("a-entity");
+        line.setAttribute("line", `start: ${axis.start}; end: ${axis.end}; color: ${axis.color}`);
+        chartContainer.appendChild(line);
 
-      // Attach the Three.js scene to the A-Frame chart container
-      chartContainer.add(scene);
-
-      // Add axis labels with adjusted Z-axis label placement
-      const labels = [
-        { text: "Sales (M$)", position: [0.55, 0, 0] },
-        { text: "Revenue (M$)", position: [0, 0.55, 0] },
-        { text: "Region", position: [0, 0, 0.75] },
-      ];
-
-      labels.forEach((label) => {
-        const text = document.createElement("a-text");
-        text.setAttribute("value", label.text);
-        text.setAttribute("color", "white");
-        text.setAttribute("side", "double");
-        text.setAttribute("scale", "0.2 0.2 0.2"); // Smaller axis labels
-        text.setAttribute("position", label.position.join(" "));
-        document.querySelector("a-marker").appendChild(text);
+        const label = document.createElement("a-text");
+        const position = axis.end.split(" ").map(v => parseFloat(v) + 0.1).join(" ");
+        label.setAttribute("value", axis.label);
+        label.setAttribute("color", "white");
+        label.setAttribute("side", "double");
+        label.setAttribute("scale", "0.2 0.2 0.2");
+        label.setAttribute("position", position);
+        chartContainer.appendChild(label);
       });
     });
   </script>
