@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Refined 3D Bar Chart</title>
+  <title>Scaled 3D Bar Chart</title>
   <!-- Latest A-Frame -->
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   <!-- AR.js -->
@@ -13,8 +13,8 @@
   <a-scene embedded arjs>
     <!-- Marker -->
     <a-marker preset="custom" type="pattern" url="marker.patt">
-      <!-- Rotate the chart for better 3D depth -->
-      <a-entity id="chart-container" position="0 0 0" rotation="0 45 0"></a-entity>
+      <!-- Scale the entire graph -->
+      <a-entity id="chart-container" position="0 0 0" rotation="0 45 0" scale="2 2 2"></a-entity>
     </a-marker>
     <a-entity camera></a-entity>
   </a-scene>
@@ -36,8 +36,8 @@
         const bar = document.createElement("a-box");
         bar.setAttribute("position", `${point.x} ${point.y / 2} ${point.z}`);
         bar.setAttribute("height", point.y);
-        bar.setAttribute("width", "0.08"); // Wider bars
-        bar.setAttribute("depth", "0.08");
+        bar.setAttribute("width", "0.1"); // Increased bar width
+        bar.setAttribute("depth", "0.1"); // Increased bar depth
         bar.setAttribute("color", point.color);
         chartContainer.appendChild(bar);
 
@@ -47,16 +47,16 @@
         label.setAttribute("color", "white");
         label.setAttribute("side", "double");
         label.setAttribute("align", "center");
-        label.setAttribute("scale", "0.25 0.25 0.25"); // Larger labels
-        label.setAttribute("position", `${point.x} ${point.y + 0.1} ${point.z + 0.05}`); // Slightly forward
+        label.setAttribute("scale", "0.3 0.3 0.3"); // Larger labels for readability
+        label.setAttribute("position", `${point.x} ${point.y + 0.2} ${point.z + 0.05}`); // Slightly above and forward
         chartContainer.appendChild(label);
       });
 
       // Add axes
       const axes = [
-        { start: "0 0 0", end: "0.6 0 0", color: "white", label: "Sales" },
-        { start: "0 0 0", end: "0 1 0", color: "white", label: "Revenue" },
-        { start: "0 0 0", end: "0 0 1", color: "white", label: "Region" },
+        { start: "0 0 0", end: "0.7 0 0", color: "white", label: "Sales" },
+        { start: "0 0 0", end: "0 1.2 0", color: "white", label: "Revenue" },
+        { start: "0 0 0", end: "0 0 1.2", color: "white", label: "Region" },
       ];
 
       axes.forEach(axis => {
@@ -65,11 +65,11 @@
         chartContainer.appendChild(line);
 
         const label = document.createElement("a-text");
-        const position = axis.end.split(" ").map(v => parseFloat(v) + 0.1).join(" ");
+        const position = axis.end.split(" ").map(v => parseFloat(v) + 0.15).join(" ");
         label.setAttribute("value", axis.label);
         label.setAttribute("color", "white");
         label.setAttribute("side", "double");
-        label.setAttribute("scale", "0.25 0.25 0.25"); // Larger axis labels
+        label.setAttribute("scale", "0.3 0.3 0.3"); // Larger axis labels
         label.setAttribute("position", position);
         chartContainer.appendChild(label);
       });
